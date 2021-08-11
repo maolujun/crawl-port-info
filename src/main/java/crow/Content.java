@@ -50,12 +50,20 @@ public class Content {
     private static void inflatePort() {
         File route=new File("D:\\temp\\crawl\\port\\route.json");
         File port=new File("D:\\temp\\crawl\\port\\port.json");
+        writeAppend(new StringBuilder("["),route);
+        writeAppend(new StringBuilder("["),port);
+        int i0 = 0;
+        int s0 = routesList.size();
         for (Routes routes : routesList) {
+            i0++;
             //进去这个页面
             Element elementBySe = getElementByJsoup(routes.getLink());
             //然后把每一行数据都写进去
             Elements select = elementBySe.select("#wrap > div:nth-child(3) > div > table > tbody > tr");
+            int i = 0;
+            int s = select.size();
             for (Element tr : select) {
+                i++;
                 Port port1 = new Port();
                 //这是每一个tr
                 Elements eleTds = tr.select("> td");
@@ -90,11 +98,21 @@ public class Content {
                     }
                 }
                 port1.setRouteName(routes.getName());
-                writeAppend(new StringBuilder(JSONObject.toJSONString(port1)).append("\r\n"),port);
+                if (i == s) {
+                    writeAppend(new StringBuilder(JSONObject.toJSONString(port1)).append("\r\n"),port);
+                }else {
+                    writeAppend(new StringBuilder(JSONObject.toJSONString(port1)).append(",\r\n"), port);
+                }
             }
             //这里写入
-            writeAppend(new StringBuilder(JSONObject.toJSONString(routes)).append("\r\n"),route);
+            if (i0 == s0) {
+                writeAppend(new StringBuilder(JSONObject.toJSONString(routes)).append("\r\n"),route);
+            }else {
+                writeAppend(new StringBuilder(JSONObject.toJSONString(routes)).append(",\r\n"), route);
+            }
         }
+        writeAppend(new StringBuilder("]"),port);
+        writeAppend(new StringBuilder("]"),route);
     }
 
     private static void runSql() {
@@ -103,7 +121,8 @@ public class Content {
 
     private static void inflateRoute() {
         Element elementBySe = getElementBySe("https://www.gangkoudaima.com/");
-        Elements select = elementBySe.select("#wrap > div:nth-child(4) > div:nth-child(2) > table > tbody > tr");
+        Elements select = elementBySe.select("#wrap > div:nth-child(3) > div:nth-child(2) > table > tbody > tr");
+        System.out.println(elementBySe.select("#wrap > div:nth-child(3) > div:nth-child(2) > table > tbody > tr"));
         if (!Objects.isNull(select) && !select.isEmpty()) {
             for (Element eleTr : select) {
                 Elements tds = eleTr.select("> td");
@@ -128,7 +147,7 @@ public class Content {
      */
     public static void generateJava() {
         StringBuilder sb = new StringBuilder();
-        String path = "E:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarSubtype.java";
+        String path = "D:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarSubtype.java";
         //这里我要生成java实体
         Element elementBySe = getElementBySe("https://product.360che.com/m280/70095_param.html");
         Elements select = elementBySe.select("#mybody > div.wrapper > div.parameter-detail.highlighted > table:nth-child(1) > tbody > tr[class=param-row]");
@@ -144,10 +163,10 @@ public class Content {
 
 
     private static void createTable() throws Exception {
-        String brand = genCreateTable(new File("E:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\Brand.java"), "brand");
-        String brandSeries = genCreateTable(new File("E:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\BrandSeries.java"), "brand_series");
-        String carModel = genCreateTable(new File("E:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarModel.java"), "car_model");
-        String carSubtype = genCreateTable(new File("E:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarSubtype.java"), "car_subtype");
+        String brand = genCreateTable(new File("D:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\Brand.java"), "brand");
+        String brandSeries = genCreateTable(new File("D:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\BrandSeries.java"), "brand_series");
+        String carModel = genCreateTable(new File("D:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarModel.java"), "car_model");
+        String carSubtype = genCreateTable(new File("D:\\dev\\project\\java\\crawltruckhome\\src\\main\\java\\crow\\bean\\CarSubtype.java"), "car_subtype");
 
         DBUtil dbUtil = new DBUtil();
         dbUtil.runSql(brand);
@@ -243,7 +262,7 @@ public class Content {
         dcaps.setJavascriptEnabled(true);
         //驱动支持（第二参数表明的是你的phantomjs引擎所在的路径）
         dcaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "E:\\dev\\plugin\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                "D:\\dev\\plugin\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         //创建无界面浏览器对象
 
         driver = new PhantomJSDriver(dcaps);
