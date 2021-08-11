@@ -74,6 +74,16 @@ public class Content {
                         String portCode = select1.text();
                         System.out.println(" 港口代码" + portCode);
                         port1.setPortCode(portCode);
+
+                        //进去这个页面
+                        Element elementByPort = getElementByJsoup("https://www.gangkoudaima.com/Port/"+portCode);
+                        //港口详情
+                        Elements selectPortTr = elementByPort.select("#wrap > div:nth-child(3) > div:nth-child(2) > table > tbody > tr");
+                        //这是每一个tr
+                        Elements elePortEnCountryName = selectPortTr.get(4).select("> td:nth-child(2)");
+                        String belonCountyEnName = elePortEnCountryName.text();
+                        System.out.println(" 这是国家英文名:" + belonCountyEnName);
+                        port1.setBelonCountyEnName(belonCountyEnName);
                     }
                 }
                 Element elePortCode1 = eleTds.get(1);
@@ -94,7 +104,7 @@ public class Content {
                     if (!Objects.isNull(select1) && !select1.isEmpty()) {
                         String belongCountry = select1.text();
                         System.out.println(" 属于" + belongCountry);
-                        port1.setBelonCountyEnName(belongCountry);
+                        port1.setCounty(belongCountry);
                     }
                 }
                 port1.setRouteName(routes.getName());
